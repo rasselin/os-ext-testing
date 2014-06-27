@@ -16,9 +16,10 @@ gearman-servers:
 labels:
   - name: d-p-c
     image: d-p-c
-    min-ready: 1
+    min-ready: 3
     providers:
       - name: local_01
+      - name: local_02
 
 providers:
   - name: local_01
@@ -36,11 +37,34 @@ providers:
         base-image: 'Ubuntu 12.04 Server (Precise)'
         min-ram: 8192
 #        setup: prepare_node_devstack.sh
-        setup: prepare_node_devstack_http_proxy.sh
+#        setup: prepare_node_devstack_http_proxy.sh
+        setup: prepare_node_basic.sh
         #Set the public key part only of the jenkin's key (no whitespace) to the NODEPOOL_SSH_KEY environment variable in order to
         #inject it into the image's jenkins user .ssh/authorized_keys
         #This key will be used to log in and setup jenkins on the target VM
         private-key: '/home/nodepool/.ssh/id_rsa'
+  - name: local_02
+    username: '<%= local_username %>'
+    password: '<%= local_password %>'
+    auth-url: 'http://<%= local_02_ip %>:5000/v2.0'
+    project-id: 'admin'
+    max-servers: 2
+    #This keypair is used to create the image and should be found in the cloud keypairs.
+    #The public/private parts of this keypair need to be in the user who's running nodepool ~/.ssh/id_rsa
+    #You can then login to vm's e.g. ubuntu username using this
+    keypair: 'jenkins'
+    images:
+      - name: d-p-c
+        base-image: 'Ubuntu 12.04 Server (Precise)'
+        min-ram: 8192
+#        setup: prepare_node_devstack.sh
+#        setup: prepare_node_devstack_http_proxy.sh
+        setup: prepare_node_basic.sh
+        #Set the public key part only of the jenkin's key (no whitespace) to the NODEPOOL_SSH_KEY environment variable in order to
+        #inject it into the image's jenkins user .ssh/authorized_keys
+        #This key will be used to log in and setup jenkins on the target VM
+        private-key: '/home/nodepool/.ssh/id_rsa'
+
 
 targets:
   - name: local-jenkins
