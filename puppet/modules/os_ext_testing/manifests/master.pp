@@ -17,8 +17,6 @@ class os_ext_testing::master (
   $log_root_url= "$publish_host/logs",
   $static_root_url= "$publish_host/static",
   $upstream_gerrit_server = 'review.openstack.org',
-  $gerrit_server='',
-  $gerrit_server_port='',
   $gearman_server = '127.0.0.1',
   $upstream_gerrit_user = '',
   $upstream_gerrit_ssh_private_key = '',
@@ -30,7 +28,6 @@ class os_ext_testing::master (
   $local_username = 'admin',
   $local_password = 'password',
   $local_01_ip = 'localhost',
-  $local_02_ip = 'localhost',
   $jenkins_api_user = 'jenkins',
   # The Jenkins API Key is needed if you have a password for Jenkins user inside Jenkins
   $jenkins_api_key = 'abcdef1234567890',
@@ -100,19 +97,13 @@ class os_ext_testing::master (
     version => '0.0.6',
   }
   jenkins::plugin { 'git':
-    version => '2.2.1',
-  }
-  jenkins::plugin { 'git-client':
-    version => '1.9.1',
+    version => '1.1.23',
   }
   jenkins::plugin { 'github-api':
     version => '1.33',
   }
   jenkins::plugin { 'github':
     version => '1.4',
-  }
-  jenkins::plugin { 'gerrit-trigger':
-    version => '2.11.1',
   }
   jenkins::plugin { 'greenballs':
     version => '1.12',
@@ -153,20 +144,14 @@ class os_ext_testing::master (
   jenkins::plugin { 'rebuild':
     version => '1.14',
   }
-  jenkins::plugin { 'scm-api':
-    version => '0.2',
-  }
   jenkins::plugin { 'simple-theme-plugin':
     version => '0.2',
-  }
-  jenkins::plugin { 'ssh-agent':
-    version => '1.4.1',
   }
   jenkins::plugin { 'timestamper':
     version => '1.3.1',
   }
   jenkins::plugin { 'token-macro':
-    version => '1.10',
+    version => '1.5.1',
   }
   jenkins::plugin { 'url-change-trigger':
     version => '1.2',
@@ -381,20 +366,5 @@ class os_ext_testing::master (
       source => 'puppet:///modules/os_ext_testing/sudoers/90-nodepool-http-proxy',
   }
 
-  file { "/var/lib/jenkins/gerrit-trigger.xml":
-      ensure => present,
-      owner  => 'jenkins',
-      group  => 'jenkins',
-      mode   => '0644',
-      content => template('os_ext_testing/jenkins/gerrit-trigger.xml.erb'),
-  }
-
-  file {"/var/lib/jenkins/credentials.xml":
-      ensure => present,
-      owner  => 'jenkins',
-      group  => 'jenkins',
-      mode   => '0644',
-      content => template('os_ext_testing/jenkins/credentials.xml.erb'),
-  }
 }
 
