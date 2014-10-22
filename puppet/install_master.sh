@@ -28,7 +28,7 @@ fi
 if [[ ! -e install_puppet.sh ]]; then
   wget https://git.openstack.org/cgit/openstack-infra/system-config/plain/install_puppet.sh
   sudo bash -xe install_puppet.sh
-  sudo /bin/bash /root/config/install_modules.sh
+  sudo /bin/bash /root/system-config/install_modules.sh
 fi
 
 # Update /root/system-config
