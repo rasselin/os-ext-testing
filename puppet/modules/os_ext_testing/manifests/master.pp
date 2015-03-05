@@ -257,8 +257,8 @@ class os_ext_testing::master (
     mysql_password           => $mysql_password,
     nodepool_ssh_private_key => $jenkins_ssh_private_key,
     environment              => {
-      #TODO(Ramy) this doesn't seem to do anything...
-      'NODEPOOL_SSH_KEY'     => $jenkins_ssh_public_key,
+      # Set up the key in /etc/default/nodepool, used by the service.
+      'NODEPOOL_SSH_KEY'     => $jenkins_ssh_public_key_no_whitespace,
     }
   }
 
