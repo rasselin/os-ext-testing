@@ -152,9 +152,14 @@ if [[ -n $PROVIDER_IMAGE_SETUP_SCRIPT_NAME ]]; then
     nodepool_args="$nodepool_args provider_image_setup_script_name => '$PROVIDER_IMAGE_SETUP_SCRIPT_NAME', "
 fi
 
+if [[ -z $JENKINS_API_PASSWORD ]]; then
+    JENKINS_API_PASSWORD=""
+fi
+
 jenkins_args="jenkins_ssh_public_key => '$JENKINS_SSH_PUBLIC_KEY_CONTENTS',
               jenkins_ssh_private_key => '$JENKINS_SSH_PRIVATE_KEY_CONTENTS',
               jenkins_api_user => '$JENKINS_API_USER',
+              jenkins_api_password => '$JENKINS_API_PASSWORD',
               jenkins_api_key => '$JENKINS_API_KEY',
               jenkins_credentials_id => '$JENKINS_CREDENTIALS_ID',
               jenkins_ssh_public_key_no_whitespace => '$JENKINS_SSH_PUBLIC_KEY_NO_WHITESPACE',"

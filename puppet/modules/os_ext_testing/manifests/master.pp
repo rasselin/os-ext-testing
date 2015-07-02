@@ -5,7 +5,6 @@
 class os_ext_testing::master (
   $vhost_name = $::fqdn,
   $data_repo_dir = '',
-  $manage_jenkins_jobs = true,
   $serveradmin = "webmaster@${::fqdn}",
   $jenkins_ssh_private_key = '',
   $jenkins_ssh_public_key = '',
@@ -31,6 +30,7 @@ class os_ext_testing::master (
   $provider_image_name = 'trusty',
   $provider_image_setup_script_name = 'prepare_node_devstack.sh',
   $jenkins_api_user = 'jenkins',
+  $jenkins_api_password = '',
   # The Jenkins API Key is needed if you have a password for Jenkins user inside Jenkins
   $jenkins_api_key = 'abcdef1234567890',
   # The Jenkins credentials_id should match the id field of this element:
@@ -47,12 +47,17 @@ class os_ext_testing::master (
 ) {
   include os_ext_testing::base
 
-  class { 'openstackci::jenkins_master':
+  class { '::openstackci::jenkins_master':
     vhost_name              => "jenkins",
     serveradmin             => $serveradmin,
     logo                    => 'openstack.png',
     jenkins_ssh_private_key => $jenkins_ssh_private_key,
     jenkins_ssh_public_key  => $jenkins_ssh_public_key,
+    manage_jenkins_jobs     => true,
+    jenkins_url             => 'http://127.0.0.1:8080/',
+    jenkins_username        => $jenkins_api_user,
+    jenkins_password        => $jenkins_api_password,
+    project_config_repo     => $project_config_repo,
   }
 
   #Extra, not part of openstack upstream:
@@ -63,25 +68,16 @@ class os_ext_testing::master (
   #TODO: Restart jenkins after plugins are installed
   #TODO: Ensure Jenkins is started before loading jenkins jobs
 
-  if $manage_jenkins_jobs == true {
-    class { '::jenkins::job_builder':
-      url      => "http://127.0.0.1:8080/",
-      username => 'jenkins',
-      password => '',
-      config_dir =>"${data_repo_dir}/etc/jenkins_jobs/config/",
-    }
-
-    file { '/etc/jenkins_jobs/config/macros.yaml':
-      ensure => present,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-      content => template('os_ext_testing/jenkins_job_builder/config/macros.yaml.erb'),
-      notify  => Exec['jenkins_jobs_update'],
-    }
+  file { '/etc/jenkins_jobs/config/macros.yaml':
+    ensure => present,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    content => template('os_ext_testing/jenkins_job_builder/config/macros.yaml.erb'),
+    notify  => Exec['jenkins_jobs_update'],
   }
 
-  class { 'openstackci::zuul_merger':
+  class { '::openstackci::zuul_merger':
     vhost_name               => $zuul_host,
     gearman_server           => $gearman_server,
     gerrit_server            => $upstream_gerrit_server,
@@ -94,7 +90,7 @@ class os_ext_testing::master (
     manage_common_zuul       => false,
   }
 
-  class { 'openstackci::zuul_scheduler':
+  class { '::openstackci::zuul_scheduler':
     vhost_name                     => $zuul_host,
     gearman_server                 => $gearman_server,
     gerrit_server                  => $upstream_gerrit_server,
