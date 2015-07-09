@@ -143,31 +143,23 @@ class os_ext_testing::master (
     source  => 'puppet:///modules/jenkins/ssh_config',
   }
 
-  class { '::nodepool':
+  class { '::openstackci::nodepool':
     mysql_root_password      => $mysql_root_password,
     mysql_password           => $mysql_password,
     nodepool_ssh_private_key => $jenkins_ssh_private_key,
-    revision                 => $nodepool_revision,
+#    revision                 => $nodepool_revision,
     environment              => {
       # Set up the key in /etc/default/nodepool, used by the service.
       'NODEPOOL_SSH_KEY'     => $jenkins_ssh_public_key_no_whitespace,
     },
-    require                  => Class['project_config'],
-    scripts_dir              => '/etc/project-config/nodepool/scripts',
-    elements_dir             => '/etc/project-config/nodepool/elements',
-  }
-
-  file { '/etc/nodepool/nodepool.yaml':
-    ensure  => present,
-    owner   => 'nodepool',
-    group   => 'sudo',
-#    mode    => '0400',
-    mode    => '0660',
-    source  => '/etc/project-config/nodepool/nodepool.yaml',
-    require => [
-      File['/etc/nodepool'],
-      User['nodepool'],
-      Class['nodepool'],
+    project_config_repo      => $project_config_repo,
+    jenkins_masters          => [
+      { name => 'local-jenkins',
+        url => 'http://localhost:8080/',
+        user => $jenkins_api_user,
+        apikey => $jenkins_api_key,
+        credentials => $jenkins_credentials_id,
+      },
     ],
   }
 
