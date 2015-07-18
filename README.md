@@ -34,6 +34,12 @@ Fortunately, that task is simple:
 
 5. update os-ext-testing-data/vars.sh to include export PROJECT_CONFIG=http://your_git_url/project-config-ci-name.git
 
+6. Push the changes. They'll be checked out in /etc/project-config
+
+NEW 7/17/2015 - Now using common-Jenkins Job Builder
+
+6. cp -R /etc/jenkins_jobs/config/* ~/project-config-ci-name/jenkins/jobs
+(The benefit of using the versions in /etc/jenkins_jobs/config instead of the ones in os-ext-testing-data is that you will also get the realized version of macros.yaml.erb)
 
 
 ## Pre-requisites
