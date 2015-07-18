@@ -30,7 +30,7 @@ Fortunately, that task is simple:
 
 3. cp ~/os-ext-testing-data/etc/zuul/layout.yaml ~/project-config-ci-name/zuul/
 
-4. cp /etc/zuul/layout/openstack_functions.py  ~/project-config-ci-name/zuul/
+4. cp ~/os-ext-testing/puppet/modules/os_ext_testing/files/zuul/openstack_functions.py ~/project-config-ci-name/zuul/
 
 5. update os-ext-testing-data/vars.sh to include export PROJECT_CONFIG=http://your_git_url/project-config-ci-name.git
 
