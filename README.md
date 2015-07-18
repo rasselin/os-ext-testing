@@ -38,8 +38,9 @@ Fortunately, that task is simple:
 
 NEW 7/17/2015 - Now using common-Jenkins Job Builder
 
-6. cp -R /etc/jenkins_jobs/config/* ~/project-config-ci-name/jenkins/jobs
-(The benefit of using the versions in /etc/jenkins_jobs/config instead of the ones in os-ext-testing-data is that you will also get the realized version of macros.yaml.erb)
+7. cp -R ~/os-ext-testing-data/etc/jenkins_jobs/config/* ~/project-config-ci-name/jenkins/jobs
+
+8. Push the changes. They'll be checked out in /etc/project-config
 
 
 ## Pre-requisites
@@ -202,66 +203,6 @@ couple manual configuration steps in the Jenkins UI.
    nodepoold -d $DAEMON_ARGS
    ```
     TODO(Ramy) why does sudo service nodepool not work?
-
-### Setting up Static Jenkins Slaves
-
-On each machine you will use as a Jenkins slave, run:
-
-```
-wget https://raw.github.com/jaypipes/os-ext-testing/master/puppet/install_slave.sh
-bash install_slave.sh
-```
-
-The script will install Puppet, install a Jenkins slave, and install the Jenkins master's
-public SSH key in the `authorized_keys` of the Jenkins slave.
-
-Once the script completes successfully, you need to add the slave node to
-Jenkins master. To do so manually, follow these steps:
-
-1. Go to the Jenkins web UI. By default, this will be `http://$IP_OF_MASTER:8080`
-
-2. Click the `Credentials` link on the left
-
-3. Click the `Global credentials` link
-
-4. Click the `Add credentials` link on the left
-
-5. Select `SSH username with private key` from the dropdown labeled "Kind"
-
-6. Enter "jenkins" in the `Username` textbox
-
-7. Select the "From a file on Jenkins master" radio button and enter `/var/lib/jenkins/.ssh/id_rsa` in the File textbox
-
-8. Click the `OK` button
-
-9. Click the "Jenkins" link in the upper left to go back to home page
-
-10. Click the `Manage Jenkins` link on the left
-
-11. Click the `Manage Nodes` link
-
-12. Click the "New Node" link on the left
-
-13. Enter `devstack_slave1` in the `Node name` textbox
-
-14. Select the `Dumb Slave` radio button
-
-15. Click the `OK` button
-
-16. Enter `2` in the `Executors` textbox
-
-17. Enter `/home/jenkins/workspaces` in the `Remote root directory` textbox
-
-18. Enter `devstack_slave` in the `Labels` textbox
-
-19. Enter the IP Address of your slave host or VM in the `Host` textbox
-
-20. Select `jenkins` from the `Credentials` dropdown
-
-21. Click the `Save` button
-
-22. Click the `Log` link on the left. The log should show the master connecting
-    to the slave, and at the end of the log should be: "Slave successfully connected and online"
 
 ### Setting up Log Server
 
