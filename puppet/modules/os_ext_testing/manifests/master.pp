@@ -117,6 +117,7 @@ class os_ext_testing::master (
     project_config_repo            => $project_config_repo,
     git_email                      => $git_email,
     git_name                       => $git_name,
+    smtp_host                      => $smtp_host,
   }
 
   # We need to make sure the configuration is correct before reloading zuul,
