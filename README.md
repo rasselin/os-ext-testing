@@ -15,6 +15,18 @@ running a variety of OpenStack integration tests easy.
 
 Currently only Puppet modules are complete and tested. 
 
+Background reading:
+[third_party](http://ci.openstack.org/third_party.html)
+
+The links below contain some out of date information:
+
+[understanding-the-openstack-ci-system](http://www.joinfu.com/2014/01/understanding-the-openstack-ci-system/)
+
+[setting-up-an-external-openstack-testing-system/](http://www.joinfu.com/2014/02/setting-up-an-external-openstack-testing-system/)
+
+[setting-up-an-openstack-external-testing-system-part-2](http://www.joinfu.com/2014/02/setting-up-an-openstack-external-testing-system-part-2/)
+
+
 ## NEW 7/1/2015: This repo is being migrated to use project-config and puppet-openstackci
 This 3rd party ci repo is in the process of being migrated to use the
 [common-ci approach] (http://specs.openstack.org/openstack-infra/infra-specs/specs/openstackci.html)
@@ -42,6 +54,18 @@ NEW 7/17/2015 - Now using common-Jenkins Job Builder
 
 8. Push the changes. They'll be checked out in /etc/project-config
 
+
+## Support
+
+If you need help, you can:
+
+1. Submit a question/issue via github
+
+2. Ask in the [third party ci meetings](https://wiki.openstack.org/wiki/Meetings/ThirdParty#Weekly_Third_Party_meetings)
+
+3. Ask in the [mailing list](http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev). Use [third-party] tag in the subject. 
+
+4. Ask on [IRC freenode](https://wiki.openstack.org/wiki/IRC) in channel #openstack-infra
 
 ## Pre-requisites
 
@@ -73,6 +97,9 @@ On each of these target nodes, you will want the base image to have the
 running anything in this repository.
 
 ### Set Up Your Data Repository 
+
+NOTE: This section is a out-dated because of the migration towards the common-ci solution & project-config. See 
+those details at the top of this README.
 
 You will want to create a Git repository containing configuration data files -- such as the
 Gerrit username and private SSH key file for your testing account -- that are used
@@ -189,24 +216,44 @@ couple manual configuration steps in the Jenkins UI.
 
     sudo service zuul restart
 
+### Running jobs on Jenkins Master
+
+Currently it seems that running jobs on Jenkins Master directly no longer works. It seems to be a regression
+with newer versions of Jenkins. So skip that and go straight to:
+
+
 ### Setting up Nodepool Jenkins Slaves
 
 1. Re-run the install_master.sh script for your changes to take effect.
 
-2. TODO(Ramy) Make sure the jenkins key is setup in the 'cloud' provider
-        with name "jenkins". Also, make it configurable.
+2. Make sure the jenkins key is setup in the 'cloud' provider
+   with name "jenkins". TODO: make it configurable.
 
-3. Start nodepool:
+3. Manually create your first image. This is helpful to debug errors. On subsequent
+   debug runs, consider enabling DIB_OFFLINE=true mode to save time. Remember to unset DIB_OFFLINE when creating the real image.
+
+   See here for more information.
+   [project-config DIB tips] (https://github.com/openstack-infra/project-config/tree/master/nodepool/elements)
+
+   ```
+   sudo su - nodepool
+   #optional export DIB_OFFLINE=true
+   nodepool image-build <image-name>
+   ```
+
+4. Start nodepool:
    ```
    sudo su - nodepool
    source /etc/default/nodepool
    nodepoold -d $DAEMON_ARGS
    ```
-    TODO(Ramy) why does sudo service nodepool not work?
+   TODO(Ramy) why does sudo service nodepool not work?
 
 ### Setting up Log Server
 
 The Log server is a simple VM with an Apache web server installed that provides http access to all the log files uploaded by the jenkins jobs. It is a separate script because the jenkins-zuul-nodepool 'master' server may/can not be publicly accessible for security reasons. In addition, separating out the log server as its own server relaxes the disk space requirements needed by the jenkins master. 
+
+Installing the Log Server on the same VM as Jenkins/Nodepool/Zuul is not supported.
 
 It's configuration uses the puppet-openstackci scripts, which provide the friendly log filtering features, hightlighting, the line references, etc.
 
@@ -221,4 +268,12 @@ bash install_log_server.sh
 ```
 
 When completed, the jenkins user will be able to upload files to /srv/static/logs, which Apache will serve via http.
+This is accomplished by adding publishers to your jenkins job.
+
+For example:
+
+[console-log] (https://github.com/rasselin/os-ext-testing/blob/master/puppet/modules/os_ext_testing/templates/jenkins_job_builder/config/macros.yaml.erb#L117)
+
+[publisher used] (https://github.com/rasselin/os-ext-testing-data/blob/master/etc/jenkins_jobs/config/dsvm-cinder-driver.yaml.sample#L73)
+
 
