@@ -39,10 +39,6 @@ sudo git  --work-tree=/root/system-config/ --git-dir=/root/system-config/.git pu
 # Puppet module splits requires re-installing modules from the new location
 sudo /bin/bash /root/system-config/install_modules.sh
 
-echo "Update project-config"
-sudo git  --work-tree=/root/project-config/ --git-dir=/root/project-config/.git remote update
-sudo git  --work-tree=/root/project-config/ --git-dir=/root/project-config/.git pull
-
 # Clone or pull the the os-ext-testing repository
 if [[ ! -d $OSEXT_PATH ]]; then
     echo "Cloning os-ext-testing repo..."
@@ -101,14 +97,6 @@ else
     JENKINS_SSH_PUBLIC_KEY_NO_WHITESPACE=`sudo cat $DATA_PATH/$JENKINS_SSH_KEY_PATH.pub | cut -d' ' -f 2`
 fi
 
-# Copy over the nodepool template
-if [[ ! -e "$DATA_PATH/etc/nodepool/nodepool.yaml.erb" ]]; then
-    echo "Expected to find nodepool template at $DATA_PATH/etc/nodepool/nodepool.yaml.erb, but wasn't found. Please create this using the sample provided. Exiting."
-    exit 1
-else
-    cp -f $DATA_PATH/etc/nodepool/nodepool.yaml.erb $OSEXT_PATH/puppet/modules/os_ext_testing/templates/nodepool
-fi
-
 PUBLISH_HOST=${PUBLISH_HOST:-localhost}
 
 if [[ -z $UPSTREAM_GERRIT_SERVER ]]; then
@@ -143,14 +131,7 @@ else
 fi
 
 nodepool_args="mysql_root_password => '$MYSQL_ROOT_PASSWORD',
-               mysql_password => '$MYSQL_PASSWORD',
-               provider_username => '$PROVIDER_USERNAME',
-               provider_password => '$PROVIDER_PASSWORD',
-               provider_image_name => '$PROVIDER_IMAGE_NAME',"
-
-if [[ -n $PROVIDER_IMAGE_SETUP_SCRIPT_NAME ]]; then
-    nodepool_args="$nodepool_args provider_image_setup_script_name => '$PROVIDER_IMAGE_SETUP_SCRIPT_NAME', "
-fi
+               mysql_password => '$MYSQL_PASSWORD',"
 
 if [[ -z $JENKINS_API_PASSWORD ]]; then
     JENKINS_API_PASSWORD=""
@@ -164,10 +145,6 @@ jenkins_args="jenkins_ssh_public_key => '$JENKINS_SSH_PUBLIC_KEY_CONTENTS',
               jenkins_credentials_id => '$JENKINS_CREDENTIALS_ID',
               jenkins_ssh_public_key_no_whitespace => '$JENKINS_SSH_PUBLIC_KEY_NO_WHITESPACE',"
 
-proxy_args="http_proxy => '$HTTP_PROXY',
-            https_proxy => '$HTTPS_PROXY',
-            no_proxy => '$NO_PROXY',"
-
-CLASS_ARGS="$gerrit_args $zuul_args $nodepool_args $jenkins_args $proxy_args"
+CLASS_ARGS="$gerrit_args $zuul_args $nodepool_args $jenkins_args"
 sudo puppet apply --verbose $PUPPET_MODULE_PATH -e "class {'os_ext_testing::master': $CLASS_ARGS }"
 

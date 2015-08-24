@@ -54,6 +54,31 @@ NEW 7/17/2015 - Now using common-Jenkins Job Builder
 
 8. Push the changes. They'll be checked out in /etc/project-config
 
+NEW 8/24/2015 - Migrate nodepool configuration files to project-config
+
+There are a few big changes here. First, previously, the nodepool.yaml file was a template where some portions where
+populated by puppet. After migrating, the nodepool.yaml will be a static file containing all usernames and credentials.
+
+Second, previously the nodepool elements and scripts used to build nodepool images were copied from http://git.openstack.org/cgit/openstack-infra/project-config/tree/nodepool.
+The puppet scripts allowed you to override and add additional scripts/elements in your os-ext-testing-data repository. This is no
+longer supported. Instead, you manually fork the scripts and elements and maintain them separately.
+
+
+9. cd ~/project-config-ci-name/
+
+10. mkdir nodepool
+
+11. If you already have a nodepool.yaml file create previously, copy it from /etc/nodepool to ~/project-config-ci-name/nodepool
+otherwise, create a new one taking care to ensure all values are fully resolved. [Nodepool Configuration Manual] 
+(http://docs.openstack.org/infra/nodepool/configuration.html)
+
+12. If you already have scripts/elemements in /etc/nodepool, copy them over to  ~/project-config-ci-name/nodepool/elements and
+ ~/project-config-ci-name/nodepool/scripts.
+Otherwise, start with the scripts/elements provided [by upstream's project config] (http://git.openstack.org/cgit/openstack-infra/project-config/tree/nodepool
+) and adjust to make them work in your environment.
+
+13. Remove any remaining values in your previous os-ext-testing-data/vars.sh such as PROVIDER_.*
+
 
 ## Support
 

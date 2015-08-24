@@ -158,67 +158,12 @@ class os_ext_testing::master (
     group   => 'sudo',
 #    mode    => '0400',
     mode    => '0660',
-    content => template("os_ext_testing/nodepool/nodepool.yaml.erb"),
+    source  => '/etc/project-config/nodepool/nodepool.yaml',
     require => [
       File['/etc/nodepool'],
       User['nodepool'],
+      Class['nodepool'],
     ],
-  }
-
-  file { '/etc/nodepool/scripts':
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-    recurse => true,
-    purge   => true,
-    force   => true,
-    require => File['/etc/nodepool'],
-    sourceselect => all,
-    source  => [
-        # With sourceselect => our files will take precedance when found in both
-        # Our files include workarounds until some patches land in openstack/project-config
-        # As well as custom settings to ensure http proxies are taken into consideration
-        "${data_repo_dir}/etc/nodepool/scripts",
-        '/root/project-config/nodepool/scripts',
-      ],
-  }
-
-  file { '/etc/nodepool/elements':
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-    recurse => true,
-    purge   => true,
-    force   => true,
-    require => File['/etc/nodepool'],
-    sourceselect => all,
-    source  => [
-        # With sourceselect => our files will take precedance when found in both
-        # To ignore a file in project-config, simply create an empty file of the same name.
-        # To modify a file in project-config, include the modified copy in the data repo.
-        # New files automatically get pulled in using the disk-image-builder
-        "${data_repo_dir}/etc/nodepool/elements",
-        '/root/project-config/nodepool/elements',
-      ],
-  }
-
-  #Make sure http proxy environment variables are available to all users
-  file { "/etc/profile.d/set_nodepool_env.sh":
-      ensure => present,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-      content => template('os_ext_testing/nodepool/set_nodepool_env.sh.erb'),
-  }
-
-  file { "/etc/sudoers.d/90-nodepool-http-proxy":
-      ensure => present,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0440',
-      source => 'puppet:///modules/os_ext_testing/sudoers/90-nodepool-http-proxy',
   }
 
   file {"/var/lib/jenkins/credentials.xml":
@@ -228,7 +173,6 @@ class os_ext_testing::master (
       mode   => '0644',
       content => template('os_ext_testing/jenkins/credentials.xml.erb'),
   }
-
 
   file {"/var/lib/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml":
       ensure => present,
