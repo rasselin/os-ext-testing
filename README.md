@@ -79,6 +79,11 @@ Otherwise, start with the scripts/elements provided [by upstream's project confi
 
 13. Remove any remaining values in your previous os-ext-testing-data/vars.sh such as PROVIDER_.*
 
+14. Get the new release of install_master.sh
+```
+wget https://raw.github.com/rasselin/os-ext-testing/master/puppet/install_master.sh
+bash install_master.sh
+```
 
 ## Support
 
