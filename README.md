@@ -268,11 +268,12 @@ with newer versions of Jenkins. So skip that and go straight to:
 
 4. Start nodepool:
    ```
+   sudo service nodepool start
+   # Or manually (in a screen session):
    sudo su - nodepool
    source /etc/default/nodepool
    nodepoold -d $DAEMON_ARGS
    ```
-   TODO(Ramy) why does sudo service nodepool not work?
 
 ### Setting up Log Server
 
