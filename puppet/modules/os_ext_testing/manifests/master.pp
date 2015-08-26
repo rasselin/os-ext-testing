@@ -149,7 +149,10 @@ class os_ext_testing::master (
     environment              => {
       # Set up the key in /etc/default/nodepool, used by the service.
       'NODEPOOL_SSH_KEY'     => $jenkins_ssh_public_key_no_whitespace,
-    }
+    },
+    require                  => Class['project_config'],
+    scripts_dir              => '/etc/project-config/nodepool/scripts',
+    elements_dir             => '/etc/project-config/nodepool/elements',
   }
 
   file { '/etc/nodepool/nodepool.yaml':
