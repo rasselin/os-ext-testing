@@ -55,39 +55,11 @@
           #!/bin/bash -xe
           # Install the client from the patch
           git clone $ZUUL_URL/$ZUUL_PROJECT
-          cd $ZUUL_PROJECT
+          pushd $ZUUL_PROJECT
           git fetch $ZUUL_URL/$ZUUL_PROJECT $ZUUL_REF
           git checkout FETCH_HEAD
-          sudo python setup.py install
-
-#TODO: Make this configurable for alternative mirrors
-- builder:
-    name: gozer-pypi-setup
-    builders:
-      - shell: |
-          #!/bin/bash -xe
-          echo "Using pypi mirror  http://pypi.gozer.hpcloud.net/openstack/latest"
-          cat <<EOF > ~/.pydistutils.cfg
-          [easy_install]
-          index_url = http://pypi.gozer.hpcloud.net/latest
-          EOF
-
-          sudo mkdir -p ~/.pip/
-          cat <<EOF > ~/.pip/pip.conf
-          [global]
-          proxy = http://proxy.houston.hp.com:8080/
-          index-url = http://pypi.gozer.hpcloud.net/latest
-          extra-index-url = http://pypi.python.org/simple
-          timeout = 90
-
-          [install]
-          trusted-host=
-              pypi.gozer.hpcloud.net
-              pypi.python.org
-          EOF
-
-          # Make sure the top level pip configuration also has this file
-          sudo cp ~/.pip/pip.conf /etc/pip.conf
+          sudo pip install .
+          popd
 
 - builder:
     name: link-logs
