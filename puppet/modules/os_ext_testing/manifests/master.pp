@@ -41,6 +41,8 @@ class os_ext_testing::master (
   # slave node to install and register the node as a jenkins slave
   $jenkins_credentials_id = 'abcdef-0123-4567-89abcdef0123',
   $project_config_repo = '',
+  $zuul_revision = 'master',
+  $nodepool_revision = 'master',
 ) {
   include os_ext_testing::base
 
@@ -85,6 +87,7 @@ class os_ext_testing::master (
     git_email                => $git_email,
     git_name                 => $git_name,
     manage_common_zuul       => false,
+    revision                 => $zuul_revision,
   }
 
   class { '::openstackci::zuul_scheduler':
@@ -115,6 +118,7 @@ class os_ext_testing::master (
     git_email                      => $git_email,
     git_name                       => $git_name,
     smtp_host                      => $smtp_host,
+    revision                       => $zuul_revision,
   }
 
   # We need to make sure the configuration is correct before reloading zuul,
@@ -143,6 +147,7 @@ class os_ext_testing::master (
     mysql_root_password      => $mysql_root_password,
     mysql_password           => $mysql_password,
     nodepool_ssh_private_key => $jenkins_ssh_private_key,
+    revision                 => $nodepool_revision,
     environment              => {
       # Set up the key in /etc/default/nodepool, used by the service.
       'NODEPOOL_SSH_KEY'     => $jenkins_ssh_public_key_no_whitespace,
