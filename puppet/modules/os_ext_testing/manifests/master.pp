@@ -41,9 +41,6 @@ class os_ext_testing::master (
   # slave node to install and register the node as a jenkins slave
   $jenkins_credentials_id = 'abcdef-0123-4567-89abcdef0123',
   $project_config_repo = '',
-  $http_proxy = '',
-  $https_proxy = '',
-  $no_proxy = '',
 ) {
   include os_ext_testing::base
 

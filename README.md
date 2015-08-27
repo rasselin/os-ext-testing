@@ -10,7 +10,7 @@ a real-world external testing platform that links with the upstream
 OpenStack CI platform.
 
 It installs Jenkins, Jenkins Job Builder (JJB), the Gerrit
-Jenkins plugin, Nodepool, HTTP Proxy settings, and a set of scripts that make
+Jenkins plugin, Nodepool, and a set of scripts that make
 running a variety of OpenStack integration tests easy.
 
 Currently only Puppet modules are complete and tested. 
