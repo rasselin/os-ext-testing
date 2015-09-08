@@ -51,7 +51,7 @@ if [[ "$PULL_LATEST_OSEXT_REPO" == "1" ]]; then
 fi
 
 if [[ ! -e $DATA_PATH ]]; then
-    echo "Enter the URI for the location of your config data repository. Example: https://github.com/rasselin/os-ext-testing-data"
+    echo "Enter the URI for the location of your project-config data repository. Example: https://github.com/rasselin/os-ext-testing-data"
     read data_repo_uri
     if [[ "$data_repo_uri" == "" ]]; then
         echo "Data repository is required to proceed. Exiting."
@@ -128,8 +128,9 @@ fi
 if [[ -n $PROJECT_CONFIG ]]; then
     zuul_args+="project_config_repo => '$PROJECT_CONFIG', "
 else
-    echo "This repo now requires the use of project-config. See the README.md for the simple instructions to use that."
-    exit 1
+    zuul_args+="project_config_repo => '$OSEXT_REPO', "
+    echo "This repo now requires the use of project-config. Using $OSEXT_REPO."
+    echo "See https://github.com/rasselin/os-ext-testing-data#migrate-to-project-config for the instructions to migrate."
 fi
 
 nodepool_args="mysql_root_password => '$MYSQL_ROOT_PASSWORD',
