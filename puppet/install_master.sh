@@ -66,6 +66,7 @@ if [[ "$PULL_LATEST_DATA_REPO" == "1" ]]; then
 fi
 
 # Pulling in variables from data repository
+echo "Pulling in custom vars from $DATA_PATH/vars.sh"
 . $DATA_PATH/vars.sh
 
 # Validate that the upstream gerrit user and key are present in the data
@@ -100,6 +101,7 @@ fi
 PUBLISH_HOST=${PUBLISH_HOST:-localhost}
 
 if [[ -z $UPSTREAM_GERRIT_SERVER ]]; then
+    echo "No upstream gerrit server defined. Defaulting to review.openstack.org."
     UPSTREAM_GERRIT_SERVER="review.openstack.org"
 fi
 
@@ -109,7 +111,7 @@ upstream_gerrit_ssh_private_key => '$UPSTREAM_GERRIT_SSH_PRIVATE_KEY_CONTENTS',
 upstream_gerrit_ssh_host_key => '$UPSTREAM_GERRIT_SSH_HOST_KEY',"
 
 if [[ -n $UPSTREAM_GERRIT_BASEURL ]]; then
-    gerrit_args="$gerrit_args upstream_gerrit_baseurl => '$UPSTREAM_GERRIT_BASEURL', "
+    gerrit_args+="upstream_gerrit_baseurl => '$UPSTREAM_GERRIT_BASEURL', "
 fi
 
 zuul_args="git_email => '$GIT_EMAIL',
@@ -117,14 +119,14 @@ git_name => '$GIT_NAME',
 publish_host => '$PUBLISH_HOST',
 data_repo_dir => '$DATA_PATH',"
 if [[ -n $URL_PATTERN ]]; then
-    zuul_args="$zuul_args url_pattern => '$URL_PATTERN', "
+    zuul_args+="url_pattern => '$URL_PATTERN', "
 fi
 if [[ -n $SMTP_HOST ]]; then
-    zuul_args="$zuul_args smtp_host => '$SMTP_HOST', "
+    zuul_args+="smtp_host => '$SMTP_HOST', "
 fi
 
 if [[ -n $PROJECT_CONFIG ]]; then
-    zuul_args="$zuul_args project_config_repo => '$PROJECT_CONFIG', "
+    zuul_args+="project_config_repo => '$PROJECT_CONFIG', "
 else
     echo "This repo now requires the use of project-config. See the README.md for the simple instructions to use that."
     exit 1
