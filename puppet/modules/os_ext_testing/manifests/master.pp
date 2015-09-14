@@ -42,7 +42,9 @@ class os_ext_testing::master (
   $jenkins_credentials_id = 'abcdef-0123-4567-89abcdef0123',
   $project_config_repo = '',
   $zuul_revision = 'master',
+  $zuul_git_source_repo = 'https://git.openstack.org/openstack-infra/zuul',
   $nodepool_revision = 'master',
+  $nodepool_git_source_repo = 'https://git.openstack.org/openstack-infra/nodepool',
 ) {
   include os_ext_testing::base
 
@@ -88,6 +90,7 @@ class os_ext_testing::master (
     git_name                 => $git_name,
     manage_common_zuul       => false,
     revision                 => $zuul_revision,
+    git_source_repo          => $zuul_git_source_repo,
   }
 
   class { '::openstackci::zuul_scheduler':
@@ -119,6 +122,7 @@ class os_ext_testing::master (
     git_name                       => $git_name,
     smtp_host                      => $smtp_host,
     revision                       => $zuul_revision,
+#    git_source_repo                => $zuul_git_source_repo,
   }
 
   # We need to make sure the configuration is correct before reloading zuul,
@@ -147,7 +151,8 @@ class os_ext_testing::master (
     mysql_root_password       => $mysql_root_password,
     mysql_password            => $mysql_password,
     nodepool_ssh_private_key  => $jenkins_ssh_private_key,
-#    revision                 => $nodepool_revision,
+    revision                  => $nodepool_revision,
+    git_source_repo           => $nodepool_git_source_repo,
     environment               => {
       # Set up the key in /etc/default/nodepool, used by the service.
       'NODEPOOL_SSH_KEY'      => $jenkins_ssh_public_key_no_whitespace,

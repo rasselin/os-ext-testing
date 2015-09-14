@@ -132,9 +132,23 @@ else
     echo "This repo now requires the use of project-config. Using $OSEXT_REPO."
     echo "See https://github.com/rasselin/os-ext-testing-data#migrate-to-project-config for the instructions to migrate."
 fi
+if [[ -n $ZUUL_REPO ]]; then
+    zuul_args+="zuul_git_source_repo => '$ZUUL_REPO', "
+fi
+if [[ -n $ZUUL_REVISION ]]; then
+    zuul_args+="zuul_revision => '$ZUUL_REVISION', "
+fi
+
 
 nodepool_args="mysql_root_password => '$MYSQL_ROOT_PASSWORD',
                mysql_password => '$MYSQL_PASSWORD',"
+
+if [[ -n $NODEPOOL_REPO ]]; then
+    nodepool_args+="nodepool_git_source_repo => '$NODEPOOL_REPO', "
+fi
+if [[ -n $NODEPOOL_REVISION ]]; then
+    nodepool_args+="nodepool_revision => '$NODEPOOL_REVISION', "
+fi
 
 if [[ -z $JENKINS_API_PASSWORD ]]; then
     JENKINS_API_PASSWORD=""
