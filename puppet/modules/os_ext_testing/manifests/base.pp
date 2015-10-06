@@ -7,16 +7,6 @@ class os_ext_testing::base(
   if ($::osfamily == 'Debian') {
     include apt
   }
-  #Temporarily exclude ssh due to undesired changes in /etc/ssh/sshd_config
-  #Which remove the password option to login to the VM, requiring an authentication key.
-  #If enabled, manual workaround:
-  # 1. As root, make writable and update this file:
-  # 2. vi  /etc/ssh/sshd_config
-  # 3. Change PasswordAuthentication no --> yes, otherwise you cannot login to the machine with a password….
-  # 4. And then restart the sshd daemon.
-  # From <http://stackoverflow.com/questions/1556056/permission-denied-publickey-keyboard-interactive>
-  #include ssh
-
   include snmpd
   #Manage ntp externally
   #include ntp
@@ -34,7 +24,7 @@ class os_ext_testing::base(
     default: {
       fail("Unsupported osfamily: ${::osfamily} The 'os-ext-testing' module only supports osfamily Debian or RedHat (slaves only).")
     }
-  } 
+  }
   include sudoers
   file { '/etc/profile.d/Z98-byobu.sh':
     ensure => absent,
