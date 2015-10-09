@@ -153,6 +153,7 @@ class os_ext_testing::master (
     nodepool_ssh_private_key  => $jenkins_ssh_private_key,
     revision                  => $nodepool_revision,
     git_source_repo           => $nodepool_git_source_repo,
+    oscc_file_contents        => '',
     environment               => {
       # Set up the key in /etc/default/nodepool, used by the service.
       'NODEPOOL_SSH_KEY'      => $jenkins_ssh_public_key_no_whitespace,
