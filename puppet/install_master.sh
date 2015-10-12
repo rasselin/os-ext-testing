@@ -51,11 +51,15 @@ if [[ "$PULL_LATEST_OSEXT_REPO" == "1" ]]; then
 fi
 
 if [[ ! -e $DATA_PATH ]]; then
-    echo "Enter the URI for the location of your project-config data repository. Example: https://github.com/rasselin/os-ext-testing-data"
-    read data_repo_uri
-    if [[ "$data_repo_uri" == "" ]]; then
-        echo "Data repository is required to proceed. Exiting."
-        exit 1
+    if [[ -z $PROJECT_CONFIG ]]; then
+        echo "Enter the URI for the location of your project-config data repository. Example: https://github.com/rasselin/os-ext-testing-data"
+        read data_repo_uri
+        if [[ "$data_repo_uri" == "" ]]; then
+            echo "Data repository is required to proceed. Exiting."
+            exit 1
+        fi
+    else
+        data_repo_uri=$PROJECT_CONFIG
     fi
     git clone $data_repo_uri $DATA_PATH
 fi
