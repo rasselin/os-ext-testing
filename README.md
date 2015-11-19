@@ -1,3 +1,24 @@
+# DEPRECATION NOTICE
+
+This repo is now deprecated and will no longer be actively maintained.
+Why? Because there is finally a community supported edition that is
+very similar! \o/ You can read the new and improved instructions here:
+[https://github.com/openstack-infra/puppet-openstackci/blob/master/contrib/README.md](https://github.com/openstack-infra/puppet-openstackci/blob/master/contrib/README.md)
+
+If you've used this solution, migrating to the new solution should
+be relatively straight-forward. A lot of the 'magic' in the script
+has been made manual so that it is more explicit. You will also be
+using a better approach to maintaining a masterless puppet environment.
+In general, many of the custom
+values from the `vars.sh` are now stored in a hiera yaml file.
+In addition, all the configuration files stored in os-ext-testing-data
+repo are now available in
+[https://github.com/openstack-infra/project-config-example](https://github.com/openstack-infra/project-config-example)
+
+Future bug fixes, pull requests, etc. should be done on the
+above mentioned repositories for the benefit of the larger
+Openstack community and even some outside of OpenStack.
+
 # OpenStack External Test Platform
 
 !! THIS REPOSITORY IS VERY MUCH A WORK IN PROGRESS !!
@@ -13,7 +34,7 @@ It installs Jenkins, Jenkins Job Builder (JJB), the Gerrit
 Jenkins plugin, Nodepool, and a set of scripts that make
 running a variety of OpenStack integration tests easy.
 
-Currently only Puppet modules are complete and tested. 
+Currently only Puppet modules are complete and tested.
 
 Background reading:
 [third_party](http://ci.openstack.org/third_party.html)
@@ -69,7 +90,7 @@ longer supported. Instead, you manually fork the scripts and elements and mainta
 10. mkdir nodepool
 
 11. If you already have a nodepool.yaml file create previously, copy it from /etc/nodepool to ~/project-config-ci-name/nodepool
-otherwise, create a new one taking care to ensure all values are fully resolved. [Nodepool Configuration Manual] 
+otherwise, create a new one taking care to ensure all values are fully resolved. [Nodepool Configuration Manual]
 (http://docs.openstack.org/infra/nodepool/configuration.html)
 
 12. If you already have scripts/elemements in /etc/nodepool, copy them over to  ~/project-config-ci-name/nodepool/elements and
@@ -88,7 +109,7 @@ If you need help, you can:
 
 2. Ask in the [third party ci meetings](https://wiki.openstack.org/wiki/Meetings/ThirdParty#Weekly_Third_Party_meetings)
 
-3. Ask in the [mailing list](http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev). Use [third-party] tag in the subject. 
+3. Ask in the [mailing list](http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev). Use [third-party] tag in the subject.
 
 4. Ask on [IRC freenode](https://wiki.openstack.org/wiki/IRC) in channel #openstack-infra
 
@@ -117,13 +138,13 @@ CI platform. You can read the instructions for doing
 We will be installing a Jenkins master server and infrastructure on one
 host or virtual machine and one or more Jenkins slave servers on hosts or VMs.
 
-On each of these target nodes, you will want the base image to have the 
+On each of these target nodes, you will want the base image to have the
 `wget`, `openssl`, `ssl-cert` and `ca-certificates` packages installed before
 running anything in this repository.
 
-### Set Up Your Data Repository 
+### Set Up Your Data Repository
 
-NOTE: This section is a out-dated because of the migration towards the common-ci solution & project-config. See 
+NOTE: This section is a out-dated because of the migration towards the common-ci solution & project-config. See
 those details at the top of this README.
 
 You will want to create a Git repository containing configuration data files -- such as the
@@ -170,7 +191,7 @@ data repository:
    key pair into some subdirectory of your data repository, then change the value of the `$JENKINS_SSH_KEY_PATH`
    variable in `vars.sh` to an appropriate value.
 
-7. Copy etc/nodepool/nodepool.yaml.erb.sample to etc/nodepool/nodepool.yaml.erb. Adjust as needed according to docs: http://ci.openstack.org/nodepool/configuration.html.  
+7. Copy etc/nodepool/nodepool.yaml.erb.sample to etc/nodepool/nodepool.yaml.erb. Adjust as needed according to docs: http://ci.openstack.org/nodepool/configuration.html.
 8. Update etc/zuul/layout.yaml according to docs: http://ci.openstack.org/zuul/zuul.html#layout-yaml
 
 ## Usage
@@ -277,7 +298,7 @@ with newer versions of Jenkins. So skip that and go straight to:
 
 ### Setting up Log Server
 
-The Log server is a simple VM with an Apache web server installed that provides http access to all the log files uploaded by the jenkins jobs. It is a separate script because the jenkins-zuul-nodepool 'master' server may/can not be publicly accessible for security reasons. In addition, separating out the log server as its own server relaxes the disk space requirements needed by the jenkins master. 
+The Log server is a simple VM with an Apache web server installed that provides http access to all the log files uploaded by the jenkins jobs. It is a separate script because the jenkins-zuul-nodepool 'master' server may/can not be publicly accessible for security reasons. In addition, separating out the log server as its own server relaxes the disk space requirements needed by the jenkins master.
 
 Installing the Log Server on the same VM as Jenkins/Nodepool/Zuul is not supported.
 
